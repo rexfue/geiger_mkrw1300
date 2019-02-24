@@ -4,6 +4,9 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 
+#define VERSION "V1.0"
+#define VDATE "2019-02-24"
+
 #define MAXCNT 100 
 #define CalFactor 1 
 
@@ -25,6 +28,9 @@ unsigned long oldTime = 0;
 volatile char gotit = 0;
 unsigned long lastsec;
 
+String version = String(VERSION);
+String vdate = String(VDATE);
+
 void writeText(String txt, int x, int y, int size) {
   display.setTextSize(size);      // Normal 1:1 pixel scale
   display.setTextColor(WHITE,BLACK);    // Draw white text
@@ -42,7 +48,8 @@ void setup()
   delay(1000);
   display.clearDisplay();
   delay(1000);
-  writeText("     Geigerzaehler",0,0,1);
+  writeText("Geigerzaehler",20,0,1);
+  writeText(version+"  "+vdate,10,10,1);
   
   pinMode(LED_BUILTIN, OUTPUT);        //sign of live
   /* for (int i=1; i<=10; i++) {           
@@ -64,20 +71,21 @@ void setup()
   Serial.print("Your device EUI is: ");
   Serial.println(modem.deviceEUI());
   
-  writeText("DEVEUI: ",0,20,1);
-  writeText(String(modem.deviceEUI()),10,30,1);
+  writeText("DEVEUI: ",0,25,1);
+  writeText(String(modem.deviceEUI()),10,35,1);
   
   Serial.println("Trying to join TTN ...");
-  writeText("Joining ..",0,40,1);
+  writeText("Joining ..",0,45,1);
   int connected = modem.joinOTAA(appEui, appKey);
   if (!connected) {
     Serial.println("Something went wrong; are you indoor? Move near a window and retry");
-    writeText("No LoRa   ",65,40,1);
+    writeText("No LoRa   ",65,45,1);
  //   while (1) {}
   }
-  else
+  else {
     Serial.println("Successfully joined");
-    writeText("Joined ! ",65,40,1);
+    writeText("Joined ! ",65,45,1);
+  }
   // Set poll interval to 60 secs.
   modem.minPollInterval(60);
   // NOTE: independently by this setting the modem will
@@ -86,7 +94,7 @@ void setup()
 
   delay(3000);
   display.clearDisplay();
-  writeText("     Geigerzaehler",0,0,1);
+  writeText("Geigerzaehler",20,0,1);
   Serial.println("Start waiting for geiger pulses ...");
   attachInterrupt(digitalPinToInterrupt(0), count, FALLING); 
 
